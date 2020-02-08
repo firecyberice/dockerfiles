@@ -1,0 +1,8 @@
+# Base image
+NEXTCLOUD_IMAGE_TAG=17.0-apache
+
+# Restic version to install
+RESTIC_VERSION=0.9.6
+
+# Mariadb image to copy mysqldump from
+MARIADB_IMAGE=10.3

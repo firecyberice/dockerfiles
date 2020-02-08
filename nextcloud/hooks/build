@@ -1,0 +1,36 @@
+#!/bin/bash
+set -e
+
+case $(uname -s|tr '[:upper:]' '[:lower:]') in
+    linux)
+        SED=sed
+    ;;
+    darwin)
+        SED=gsed
+    ;;
+    *)
+        echo "sed not found"
+        exit 1
+esac
+
+source VERSION
+GITREMOTE=$(git config --get remote.origin.url)
+GITHOST=$(echo "${GITREMOTE}" | $SED -r "s|((.*)(\:\/\/))?((.*)\@)?([^\/:]*)(\:([0-9]+))?[:\/](.*)(\.git)|\6|")
+GITPATH=$(echo "${GITREMOTE}" | $SED -r "s|((.*)(\:\/\/))?((.*)\@)?([^\/:]*)(\:([0-9]+))?[:\/](.*)(\.git)|\9|")
+
+docker image build --pull \
+--tag ${DOCKER_REPO}:${DOCKER_TAG} \
+--build-arg RESTIC_VERSION=${RESTIC_VERSION} \
+--build-arg NEXTCLOUD_IMAGE_TAG=${NEXTCLOUD_IMAGE_TAG} \
+--label org.opencontainers.image.created="$(date -u +"%Y-%m-%dT%H:%M:%S%Z_%Z")" \
+--label org.opencontainers.image.revision="$(git rev-parse --short HEAD)" \
+--label org.opencontainers.image.title="$(basename ${PWD})" \
+--label org.opencontainers.image.vendor="firecyberice" \
+--label org.opencontainers.image.source="https://${GITHOST}/${GITPATH}" \
+--label org.opencontainers.image.version="${NEXTCLOUD_IMAGE_TAG}" \
+--label org.opencontainers.image.version.nextcloud="${NEXTCLOUD_IMAGE_TAG}" \
+--label org.opencontainers.image.version.restic="${RESTIC_VERSION}" \
+.
+
+docker image tag ${DOCKER_REPO}:${DOCKER_TAG} ${DOCKER_REPO}:${NEXTCLOUD_IMAGE_TAG}
+docker image push ${DOCKER_REPO}:${NEXTCLOUD_IMAGE_TAG}
