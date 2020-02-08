@@ -138,6 +138,10 @@ export AWS_SECRET_ACCESS_KEY
 
 cd ${WORKDIR}
 
+if [[ $# -eq 0 ]]; then
+  usage
+  exit 0
+fi
 
 CMD=${1}
 shift
@@ -167,9 +171,8 @@ case $CMD in
     usage
   ;;
 esac
-if [[ $# -eq 0 ]]; then
-  usage
-fi
+
+
 exit 0
 
 
