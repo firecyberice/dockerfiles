@@ -1,0 +1,22 @@
+version: '3.7'
+
+networks:
+  backend:
+    driver: bridge
+
+services:
+  nameserver:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: firecyberice/docker-bind9:latest
+    restart: on-failure:5
+    ports:
+      - "1053:53"
+      - "1053:53/udp"
+    networks:
+      backend:
+    cap_add:
+      - NET_BIND_SERVICE
+    volumes:
+      - ./bind9_config/etc/bind:/etc/bind

@@ -1,0 +1,73 @@
+options {
+//  recursion no;
+//  additional-from-cache no;
+  directory "/var/cache/bind";
+  auth-nxdomain no;    # conform to RFC1035
+        version none;
+  listen-on-v6 {
+      localhost;
+      any;
+//      none;
+  };
+
+  listen-on {	127.0.0.1;
+      any;
+  };
+  allow-recursion {
+      localhost;
+      trusted;
+//      any;
+//      none;
+  };
+  allow-transfer {
+      localhost;
+      trusted;
+      any;
+//      none;
+  };
+  allow-query {
+      localhost;
+      127.0.0.1/8;
+      trusted;
+      any;
+  };
+  allow-query-cache {
+      any;
+//      none;
+  };
+
+//  forward first;
+
+  forwarders {
+  // freenom.world
+  80.80.80.80;
+  80.80.81.81;
+  // CCC Berlin
+  213.73.91.35;
+  194.95.202.198;
+  };
+
+        // Chaos Computer Club Berlin
+//      forwarders {213.73.91.35; 194.95.202.198;};
+        // FoeBuD
+//      forwarders {85.214.73.63;};
+        // German Privacy Foundation
+//      forwarders {87.118.100.175; 94.75.228.29; 85.25.251.254;};
+        // openNic Deutschland
+//      forwarders {217.79.186.148; 66.244.95.20;};
+        // openNic Australien
+//      forwarders {58.6.115.42; 58.6.115.43; 119.31.230.42;};
+        // Cesidian
+//      forwarders {178.254.3.55; 78.47.115.194; 78.47.115.197; 84.200.212.28; 217.39.171.33; 84.200.208.200; 84.200.21
+        // NAME.SPACE
+//      forwarders {209.48.2.16; 184.74.208.107; 209.48.4.2; 184.74.208.109;};
+        // Unifiedroot
+//      forwarders {93.88.144.10; 93.88.145.10; 93.88.146.10; 93.88.147.10; 93.88.148.10; 93.88.149.10; 93.88.150.10; 9
+        // public root
+//      forwarders {84.22.106.2; 79.172.201.120; 91.209.12.254; 80.252.121.2; 209.97.202.107; 84.22.100.250;};
+  // CCC; FoeBud; openNIC
+//	forwarders { 213.73.91.35; 85.214.73.63; 217.79.186.148; };
+  // freenom.world
+//	forwarders { 80.80.80.80; 80.80.81.81; };
+
+};

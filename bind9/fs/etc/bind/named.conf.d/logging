@@ -1,0 +1,44 @@
+        logging {
+            channel bind9log {
+                file "/var/log/named/bind9.log" versions 3 size 10m;
+                // syslog info;
+                // severity debug;
+                severity dynamic;
+                print-time yes;
+                print-severity yes;
+                print-category yes;
+            };
+            channel security {
+                file "/var/log/named/security.log" versions 2 size 5m;
+                // syslog warn;
+                // severity warn;
+                severity dynamic;
+                print-time yes;
+                print-severity yes;
+                print-category yes;
+            };
+            channel update {
+                file "/var/log/named/update.log" versions 2 size 5m;
+                // syslog warn;
+                // severity warn;
+                severity dynamic;
+                print-time yes;
+                print-severity yes;
+                print-category yes;
+            };
+            category resolver {bind9log;};
+            category default {bind9log;};
+            category queries {bind9log;};
+            category client {bind9log;};
+            category config {bind9log;};
+            category notify {bind9log;};
+            category unmatched {bind9log;};
+            category dispatch {bind9log;};
+            category dnssec {security;};
+            category database {bind9log;};
+            category security {security;};
+            category lame-servers {null;};
+	    category update {update;};
+	    category update-security {update;};
+        };
+
