@@ -9,7 +9,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: firecyberice/docker-bind9:latest
+    image: firecyberice/bind9:latest
     restart: on-failure:5
     ports:
       - "1053:53"
