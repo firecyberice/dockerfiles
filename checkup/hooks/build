@@ -6,7 +6,7 @@ GITHOST=$(echo "${GITREMOTE}" | sed -r "s|((.*)(\:\/\/))?((.*)\@)?([^\/:]*)(\:([
 GITPATH=$(echo "${GITREMOTE}" | sed -r "s|((.*)(\:\/\/))?((.*)\@)?([^\/:]*)(\:([0-9]+))?[:\/](.*)(\.git)|\9|")
 
 docker image build --pull \
---tag ${DOCKER_REPO}:${DOCKER_TAG} \ \
+--tag ${DOCKER_REPO}:${DOCKER_TAG} \
 --label org.opencontainers.image.created=$(date -u +"%Y-%m-%dT%H:%M:%S%Z_%Z") \
 --label org.opencontainers.image.revision="$(git rev-parse --short HEAD)" \
 --label org.opencontainers.image.version="$(git describe --abbrev=0 --tags 2>/dev/null)" \
