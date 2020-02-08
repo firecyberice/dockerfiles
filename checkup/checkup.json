@@ -1,0 +1,31 @@
+{
+  "checkers": [
+    {
+      "type": "tls",
+      "endpoint_name": "Google",
+      "endpoint_url": "google.com:443"
+    },
+    {
+      "type": "dns",
+      "endpoint_name": "DNS",
+      "endpoint_url": "1.1.1.1:53",
+      "hostname_fqdn": "google.com."
+    },
+    {
+      "type": "http",
+      "endpoint_name": "HTTP",
+      "endpoint_url": "http://neverssl.com"
+    }
+  ],
+  "notifier": {
+    "name": "slack",
+    "username": "Checkup",
+    "channel": "#bot-updates",
+    "webhook": ""
+  },
+  "storage": {
+      "provider": "fs",
+      "dir": "/statuspage/checks",
+      "check_expiry": 86400000000000
+  }
+}

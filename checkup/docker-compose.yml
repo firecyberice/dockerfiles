@@ -1,0 +1,29 @@
+version: '3.7'
+
+networks:
+  net-proxy:
+    external:
+      name: $PROXY_NET
+
+volumes:
+  checks:
+  
+services:
+  status:
+    command: ["every", "10m"]
+    restart: always
+    build:
+      context: .
+    image: firecyberice/checkup
+    volumes:
+      - checks:/statuspage/checks
+      - ./checkup.json:/checkup.json
+    networks:
+      net-proxy:
+    labels:
+      traefik.enable: "true"
+      traefik.port: "80"
+      traefik.frontend.rule: "Host:status.$DOMAIN"
+      traefik.frontend.entryPoints: "http"
+      traefik.frontent.passHostHeader: "true"
+      traefik.backend.loadbalancer.stickiness: "true"
