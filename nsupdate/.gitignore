@@ -1,0 +1,24 @@
+*~
+*.sqlite
+*.sqlite3
+*.key
+.DS_Store
+
+# runtime files
+db.sqlite3
+static/
+database/
+
+# compiled python
+*__pycache__*
+*.pyc
+
+# stefan stuff
+.wakatime*
+.c9
+workspace.7z
+
+gentellela/*
+
+
+

@@ -1,0 +1,32 @@
+version: '2'
+
+networks:
+  backend:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.255.0/29
+
+volumes:
+  static:
+    driver: local
+
+services:
+  nsupdate:
+    image: firecyberice/nsupdate:latest
+    restart: on-failure:5
+    networks:
+      backend:
+        ipv4_address: 192.168.255.3
+    expose:
+      - 80
+    environment:
+      - DJANGO_SETTINGS_MODULE=local_settings
+      - BASEDOMAIN=ip.firecyberice.de
+      - SECRET_KEY=asdf
+#    command: development
+    volumes:
+      - static:/var/www/static
+      - ./database:/var/www/app/data
+      - ./src/local_settings.py:/var/www/app/local_settings.py

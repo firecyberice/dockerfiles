@@ -1,0 +1,190 @@
+{% load static i18n bootstrap %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="nsupdate.info team">
+
+        <title>{% block title %}{{ WWW_HOST }}{% endblock %}</title>
+
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" rel="stylesheet" integrity="sha256-+N4/V/SbAFiW1MPBCXnfnP9QSN3+Keu+NlB+0ev/YKQ=" crossorigin="anonymous" />
+        <link href="{% static 'css/nsupdate.css' %}" rel="stylesheet">
+        <link rel="icon" type="image/svg+xml" sizes="any" href="{% static "img/favicon.svg" %}">
+        <link rel="icon" type="image/png" href="{% static "img/favicon_32.png" %}" sizes="32x32">
+        <link rel="icon" type="image/png" href="{% static "img/favicon_96.png" %}" sizes="96x96">
+        <!-- note: keep jQuery and bootstrap js here,
+                   stuff in the include / block right below might depend on it!
+        -->
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+        {% include "includes/base_head.html" %}
+        {% block html_head %}{% endblock %}
+    </head>
+
+    <body>
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="{% url 'home' %}"><span style="color: #00ba00">&#x2B25;</span> {{ WWW_HOST }}</a>
+                </div>
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li{% if nav_home %} class="active"{% endif %}>
+                            <a href="{% url 'home' %}"><i class="fa fa-home fa-fw"></i> {% trans "Home" %}</a>
+                        </li>
+                        {% if request.user.is_authenticated %}
+                        <li{% if nav_overview %} class="active"{% endif %}>
+                            <a href="{% url 'overview' %}"><i class="fa fa-list fa-fw"></i> {% trans "Overview" %}</a>
+                        </li>
+                        <li{% if nav_status %} class="active"{% endif %}>
+                            <a href="{% url 'status' %}"><i class="fa fa-list fa-fw"></i> {% trans "Status" %}</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                    <ul class="nav navbar-nav pull-right">
+                        {% if not request.user.is_authenticated %}
+                            <li{% if nav_login %} class="active"{% endif %}><a href="{% url 'login' %}"><i class="fa fa-sign-in fa-fw"></i> {% trans 'Log in' %}</a></li>
+                        {% else %}
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user fa-fw"></i> {{ request.user.username }} <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="{% url 'account_profile' %}"><i class="fa fa-cogs fa-fw"></i> {% trans 'Profile' %}</a></li>
+                                    <li><a href="{% url 'account_settings' %}"><i class="fa fa-key fa-fw"></i> {% trans 'Password change' %}</a></li>
+                                    {% if request.user.is_staff %}
+                                        <li><a href="{% url 'admin:index' %}"><i class="fa fa-wrench fa-fw"></i> {% trans 'Admin interface' %}</a></li>
+                                    {% endif %}
+                                    <li><a href="{% url 'logout' %}"><i class="fa fa-sign-out fa-fw"></i> {% trans 'Log out' %}</a></li>
+                                </ul>
+                            </li>
+                        {% endif %}
+                    </ul>
+                    <ul class="nav navbar-nav pull-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-language fa-fw"></i> {{ LANGUAGE_CODE }} <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                            {% get_language_info_list for LANGUAGES as langs %}
+                            {% for lang in langs %}
+                                {% if lang.code != LANGUAGE_CODE %}
+                                <li>
+                                    <form name="setLang{{ lang.name.split|join:"_" }}" action="{% url 'set_language' %}" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="language" value="{{ lang.code }}" />
+                                    </form>
+                                    <a href="#" onclick="document.setLang{{ lang.name.split|join:"_" }}.submit();return false;">
+                                        {{ lang.name_local }} ({{ lang.name }}) [{{ lang.code }}]
+                                    </a>
+                                </li>
+                                {% endif %}
+                            {% endfor %}
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% block header %}{% endblock %}
+        <div class="container content wrap">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div id="message_box">
+                        {% if not request.is_secure %}
+                            <div class="alert alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                {% trans "Your (http) connection is unencrypted and thus insecure." %}
+                                {% if WE_HAVE_TLS %}
+                                    {% blocktrans trimmed %}
+                                    Please use our <a href="https://{{ WWW_HOST }}/">secure https site</a>.
+                                    {% endblocktrans %}
+                                {% endif %}
+                                {% if COOKIE_SECURE %}
+                                    {% blocktrans trimmed %}
+                                    At least some of the required cookies will only work on the secure https site,
+                                    expect malfunctioning on the http site.
+                                    {% endblocktrans %}
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                        <noscript>
+                            <div class="alert alert-warning">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                {% trans "Some functionality on this site requires that you have JavaScript enabled in your browser." %}
+                            </div>
+                        </noscript>
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert {{ message.tags }}">
+                                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% block content %}
+                Here goes the content.
+            {% endblock %}
+        </div>
+
+        <div class="footer">
+            <div class="container">
+            {% include "includes/base_footer.html" %}
+            </div>
+        </div>
+        <div id="ip_detection" style="display: none">
+            {% comment %}
+               Why IP detection it is implemented as it is
+               -------------------------------------------
+               a) we use javascript to insert the img tags after the document (DOM) is ready.
+                  if we just have them in the html from the beginning, the browser would be visibly
+                  "loading" until both "images" are loaded or timed out (if e.g. you don't have IPv6).
+                  not nice.
+               b) we use fake img tags because doing it with jQuery.get() would be cross-domain:
+                  WWW_HOST -> WWW_IPV4_HOST
+                  WWW_HOST -> WWW_IPV6_HOST
+               c) yes, the setTimeout is rather unpretty and might not work for slow connections
+                  (when loading the images take more than that timeout), making the IPs appear not
+                  on the current view, but when the next view is loaded (or the current one reloaded).
+                  if you have a better idea, this is something to improve.
+               d) we detect both IPv4 and v6 in the same way. this could be optimized to use the
+                  REMOTE_ADDR we have from the view's http request and then only detect the other
+                  kind of ip using the fake img approach.
+                  OTOH, doing both IPs the same way is nicer as it is more symmetric.
+            {% endcomment %}
+            {% if not request.session.ipv4 or not request.session.ipv6 %}
+                <script type="text/javascript">
+                $(document).ready(function() {
+                    {% if not request.session.ipv4 %}
+                        $('#ip_detection').add(
+                            '<img src="//{{ WWW_IPV4_HOST }}/detectip/{{ request.session.session_key }}/" >');
+                    {% endif %}
+                    {% if not request.session.ipv6 %}
+                        $('#ip_detection').add(
+                            '<img src="//{{ WWW_IPV6_HOST }}/detectip/{{ request.session.session_key }}/" >');
+                    {% endif %}
+                    function insert_ips() {
+                        $.getJSON("{%  url 'ajax_get_ips' %}")
+                        .done(function(data) {
+                            $('#ipv4').text(data['ipv4']);
+                            $('#ipv4_rdns').text(data['ipv4_rdns']);
+                            $('#ipv6').text(data['ipv6']);
+                            $('#ipv6_rdns').text(data['ipv6_rdns']);
+                        });
+                    }
+                    setTimeout(insert_ips, 1500);
+                    setTimeout(insert_ips, 3000);
+                });
+                </script>
+            {% endif %}
+        </div>
+        {% include "includes/base_body.html" %}
+    </body>
+</html>

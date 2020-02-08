@@ -1,0 +1,17 @@
+#!/bin/bash
+set -e
+
+INITFLAG="/${APP_NAME}_initialized"
+
+if [[ ! -f "${INITFLAG}" ]]; then
+  echo "pip3 install"
+  pip3 install -r requirements.txt
+
+  echo "migrate / create database"
+  python3 manage.py migrate
+
+  echo "collectstatic"
+  python3 manage.py collectstatic --noinput
+
+  touch "${INITFLAG}"
+fi
