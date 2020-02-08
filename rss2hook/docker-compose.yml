@@ -1,0 +1,12 @@
+version: '3.7'
+
+volumes:
+  seen:
+
+services:
+  rss2hook:
+    image: firecyberice/rss2hook:latest
+    restart: unless-stopped
+    volumes:
+      - seen:/home/noroot/.rss2hook
+      - ./config.cfg:/config.cfg
