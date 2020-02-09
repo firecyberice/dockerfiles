@@ -246,6 +246,9 @@ restore() { ## Restores DSpace-CRIS from given ${RESTIC_SNAPSHOT}
 }
 
 usage(){
+    printf "\n%10s"   "Usage:"
+    printf "\n%10s\n" "nc-br [flag] command"
+
     printf "${LIGHT_BLUE}${BOLD}%-30s${NORMAL}${NO_COLOR}\t%s\n" "backup" "Make backup"
     printf "${LIGHT_BLUE}${BOLD}%-30s${NORMAL}${NO_COLOR}\t%s\n" "restore <RESTIC_SNAPSHOT>" "Restore specified snapshot"
     printf "${LIGHT_BLUE}${BOLD}%-30s${NORMAL}${NO_COLOR}\t%s\n" "snapshots" "List snapshots"
@@ -269,7 +272,7 @@ WORKDIR=/var/www/html
 CONFIG_FILE=${WORKDIR}/config/config.php
 
 #RESTIC_CREDENTIALS=${WORKDIR}/config/restic.env
-:${RESTIC_CREDENTIALS:-/restic.env}
+RESTIC_CREDENTIALS=/restic.env
 
 DOMAIN="--host $(php -r "include '${CONFIG_FILE}'; print \$CONFIG['trusted_domains'][0];")"
 
