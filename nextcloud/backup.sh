@@ -146,7 +146,7 @@ g_f_s(){
     info "Restic cleanup"
     if [[ $# -eq 1 ]]; then
       restic forget --dry-run --path /databasedump.sql --keep-last "${1}"
-      restic forget --dry-run --path "${DATAWORKDIR:-$WORKDIR}/${DATADIR:-data}" --path "${WORKDIR}/config" --keep-last "${1}"
+      restic forget --dry-run --path "${WORKDIR}/${DATADIR:-data}" --path "${WORKDIR}/config" --keep-last "${1}"
     else
       restic forget --dry-run \
         --keep-hourly 24 \
@@ -158,7 +158,7 @@ g_f_s(){
 :<<CLEANUP
       restic forget --dry-run \
         --path "${WORKDIR}/config" \
-        --path "${DATAWORKDIR:-$WORKDIR}/${DATADIR:-data}" \
+        --path "${WORKDIR}/${DATADIR:-data}" \
         --keep-hourly 24 \
         --keep-daily 7 \
         --keep-weekly 4 \
@@ -269,7 +269,9 @@ WORKDIR=/var/www/html
 CONFIG_FILE=${WORKDIR}/config/config.php
 
 #RESTIC_CREDENTIALS=${WORKDIR}/config/restic.env
-RESTIC_CREDENTIALS=/restic.env
+:${RESTIC_CREDENTIALS:-/restic.env}
+
+DOMAIN="--host $(php -r "include '${CONFIG_FILE}'; print \$CONFIG['trusted_domains'][0];")"
 
 RESTIC_OPTS="${DOMAIN:-} --tag NEXTCLOUD_VERSION=${NEXTCLOUD_VERSION} --tag TYPE=docker-container ${TAGS:-}"
 MYSQL_DUMP_OPTIONS="--dump-date --single-transaction --quick --routines --add-drop-database --add-drop-table --add-drop-trigger"
