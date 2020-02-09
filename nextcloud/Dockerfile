@@ -2,7 +2,6 @@ ARG NEXTCLOUD_IMAGE_TAG=17.0-apache
 ARG MARIADB_IMAGE_TAG=10.3
 
 FROM nextcloud:${NEXTCLOUD_IMAGE_TAG} AS base
-FROM mariadb:${MARIADB_IMAGE_TAG} AS mariadb
 
 FROM alpine:latest AS restic
 WORKDIR /data
@@ -17,5 +16,4 @@ RUN chmod +x nc-br restic
 
 FROM base AS release
 COPY --from=restic /data/ /usr/local/bin/
-COPY --from=mariadb /usr/bin/mysqldump /usr/bin/mysqldump
-#RUN apt update && apt install -y --no-install--recommends mariadb-client-10.3 && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends jq mariadb-client-10.3 && rm -rf /var/lib/apt/lists/*

@@ -31,6 +31,3 @@ docker image build --pull \
 --label org.opencontainers.image.version.nextcloud="${NEXTCLOUD_IMAGE_TAG}" \
 --label org.opencontainers.image.version.restic="${RESTIC_VERSION}" \
 .
-
-docker image tag ${DOCKER_REPO}:${DOCKER_TAG} ${DOCKER_REPO}:${NEXTCLOUD_IMAGE_TAG}
-docker image push ${DOCKER_REPO}:${NEXTCLOUD_IMAGE_TAG}

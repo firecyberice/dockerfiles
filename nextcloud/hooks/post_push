@@ -1,0 +1,7 @@
+#!/bin/bash
+set -e
+
+source VERSION
+
+docker image tag ${IMAGE_NAME} ${DOCKER_REPO}:${NEXTCLOUD_IMAGE_TAG}
+docker image push ${DOCKER_REPO}:${NEXTCLOUD_IMAGE_TAG}
