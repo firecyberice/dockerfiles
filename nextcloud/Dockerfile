@@ -17,3 +17,5 @@ RUN chmod +x nc-br restic
 FROM base AS release
 COPY --from=restic /data/ /usr/local/bin/
 RUN apt-get update && apt-get install -y --no-install-recommends jq mariadb-client-10.3 && rm -rf /var/lib/apt/lists/*
+
+RUN a2enmod headers
