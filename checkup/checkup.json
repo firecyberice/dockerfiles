@@ -18,14 +18,14 @@
     }
   ],
   "notifier": {
-    "name": "slack",
+    "type": "slack",
     "username": "Checkup",
     "channel": "#bot-updates",
     "webhook": ""
   },
   "storage": {
-      "provider": "fs",
-      "dir": "/statuspage/checks",
+      "type": "fs",
+      "dir": "/app/checks",
       "check_expiry": 86400000000000
   }
 }

@@ -16,8 +16,8 @@ services:
       context: .
     image: firecyberice/checkup
     volumes:
-      - checks:/statuspage/checks
-      - ./checkup.json:/checkup.json
+      - checks:/statuspage/app/checks
+      - ./checkup.json:/app/checkup.json
     networks:
       net-proxy:
     labels:
